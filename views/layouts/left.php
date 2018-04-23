@@ -41,6 +41,15 @@
                                 ['label' => 'Add Damage Product', 'icon' => 'cloud-upload', 'url' => ['damage-product/create'],],
                             ]
                         ],
+                        [
+                            'label' => 'Orders',
+                            'icon' => 'trash',
+                            'url' => '#',
+                            'items' => [
+                                ['label' => 'Manage Orders', 'icon' => 'list', 'url' => ['order/index'],],
+                                ['label' => 'Create New Order', 'icon' => 'cloud-upload', 'url' => ['order/create'],],
+                            ]
+                        ],
                     ],
                 ]
         )
