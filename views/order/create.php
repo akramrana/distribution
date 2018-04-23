@@ -2,20 +2,23 @@
 
 use yii\helpers\Html;
 
-
 /* @var $this yii\web\View */
 /* @var $model app\models\Orders */
 
-$this->title = 'Create Orders';
+$this->title = 'Create New Order';
 $this->params['breadcrumbs'][] = ['label' => 'Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="orders-create">
+<div class="box box-primary">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="box-body">
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+        <?=
+        $this->render('_form', [
+            'model' => $model,
+        ])
+        ?>
+
+    </div>
 
 </div>

@@ -43,11 +43,11 @@
                         ],
                         [
                             'label' => 'Orders',
-                            'icon' => 'trash',
+                            'icon' => 'book',
                             'url' => '#',
                             'items' => [
-                                ['label' => 'Manage Orders', 'icon' => 'list', 'url' => ['order/index'],],
-                                ['label' => 'Create New Order', 'icon' => 'cloud-upload', 'url' => ['order/create'],],
+                                ['label' => 'Manage Orders', 'icon' => 'database', 'url' => ['order/index'],],
+                                ['label' => 'Create New Order', 'icon' => 'plus', 'url' => ['order/create'],],
                             ]
                         ],
                     ],

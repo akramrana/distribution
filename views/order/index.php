@@ -10,39 +10,39 @@ use yii\grid\GridView;
 $this->title = 'Orders';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="orders-index">
+<div class="box box-primary">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <div class="box-body">
 
-    <p>
-        <?= Html::a('Create Orders', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+        <p class="pull pull-right">
+            <?= Html::a('Create New Order', ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+        <?=
+        GridView::widget([
+            'dataProvider' => $dataProvider,
+            'filterModel' => $searchModel,
+            'columns' => [
+                ['class' => 'yii\grid\SerialColumn'],
+                'order_number',
+                'distributor_id',
+                'manager_id',
+                'recipient_name',
+                'recipient_phone',
+                'create_date',
+                //'update_date',
+                //'is_processed',
+                'shop_id',
+                'sales_person_id',
+                //'delivery_time',
+                //'delivery_charge',
+                'is_paid',
+                //'discount',
+                //'is_deleted',
+                ['class' => 'yii\grid\ActionColumn'],
+            ],
+        ]);
+        ?>
+    </div>
 
-            'order_id',
-            'order_number',
-            'distributor_id',
-            'manager_id',
-            'recipient_name',
-            //'recipient_phone',
-            //'create_date',
-            //'update_date',
-            //'is_processed',
-            //'shop_id',
-            //'sales_person_id',
-            //'delivery_time',
-            //'delivery_charge',
-            //'is_paid',
-            //'discount',
-            //'is_deleted',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
 </div>
