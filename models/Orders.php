@@ -47,9 +47,9 @@ class Orders extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_number', 'distributor_id', 'manager_id', 'create_date'], 'required'],
+            [['order_number', 'distributor_id', 'manager_id', 'create_date', 'item_total'], 'required'],
             [['order_number', 'distributor_id', 'manager_id', 'is_processed', 'shop_id', 'sales_person_id', 'is_paid', 'is_deleted'], 'integer'],
-            [['create_date', 'update_date', 'delivery_time'], 'safe'],
+            [['create_date', 'update_date', 'delivery_time', 'item_total'], 'safe'],
             [['delivery_charge', 'discount'], 'number'],
             [['recipient_name'], 'string', 'max' => 255],
             [['recipient_phone'], 'string', 'max' => 15],

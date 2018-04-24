@@ -108,6 +108,67 @@ class OrderController extends Controller
 
         return $this->redirect(['index']);
     }
+    
+    public function actionGetManagerShopSalesperson($id)
+    {
+        $manager = \app\models\Manager::find()
+                ->select(['manager_id','name'])
+                ->where(['distributor_id' => $id,'is_active' => 1, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+        
+        $shop = \app\models\Shop::find()
+                ->select(['shop_id','name'])
+                ->where(['distributor_id' => $id,'is_active' => 1, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+        
+        $salesPerson = \app\models\SalesPerson::find()
+                ->select(['sales_person_id','name'])
+                ->where(['distributor_id' => $id,'is_active' => 1, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+        
+        return json_encode([
+            'manager' => $manager,
+            'shop' => $shop,
+            'sales_person' => $salesPerson,
+        ]);
+    }
+    
+    public function actionGetItem($query,$did=null)
+    {
+        $models = \app\models\Product::find()
+                ->where(['is_deleted' => 0, 'is_active' => 1, 'distributor_id' => $did])
+                ->andWhere(['like', 'name', $query])
+                ->all();
+
+        $data = [];
+        foreach ($models as $row) {
+
+            $d = [
+                'id' => $row->product_id,
+                'name' => $row->name,
+            ];
+            array_push($data, $d);
+        }
+        return json_encode($data);
+    }
+    
+    public function actionGetItemInfo($item)
+    {
+        $model = \app\models\Product::find()
+                ->where(['is_deleted' => 0, 'is_active' => 1, 'product_id' => $item])
+                ->one();
+        
+        $data = [
+            'id' => $model->product_id,
+            'name' => $model->name,
+            'description' => $model->description,
+            'price' => $model->final_price,
+        ];
+        return json_encode($data);
+    }
 
     /**
      * Finds the Orders model based on its primary key value.

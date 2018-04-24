@@ -5,9 +5,15 @@ use yii\widgets\ActiveForm;
 use yii\helpers\BaseUrl;
 
 \app\assets\SelectAsset::register($this);
+\app\assets\SweetAlertAsset::register($this);
+\app\assets\ToastrAsset::register($this);
 /* @var $this yii\web\View */
 /* @var $model app\models\Orders */
 /* @var $form yii\widgets\ActiveForm */
+$managerList = [];
+$shopList = [];
+$salesPersonList = [];
+
 $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
@@ -28,10 +34,14 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                             $form->field($model, 'distributor_id')->dropDownList(app\helpers\AppHelper::getAllDistributor(), [
                                 'prompt' => 'Please Select',
                                 'class' => 'select2 form-control',
+                                'onchange' => 'App.loadManagerShopSalesPerson(this.value)'
                             ])
                             ?>
                             
-                            <?= $form->field($model, 'manager_id')->textInput() ?>
+                            <?= $form->field($model, 'manager_id')->dropDownList($managerList,[
+                                'prompt' => 'Please Select',
+                                'class' => 'select2 form-control',
+                            ]) ?>
                             
                             <?= $form->field($model, 'order_number')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
                         
@@ -39,9 +49,15 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                             
                             <?= $form->field($model, 'recipient_phone')->textInput(['maxlength' => true]) ?>
                             
-                            <?= $form->field($model, 'shop_id')->textInput() ?>
+                            <?= $form->field($model, 'shop_id')->dropDownList($shopList,[
+                                'prompt' => 'Please Select',
+                                'class' => 'select2 form-control',
+                            ]) ?>
                             
-                            <?= $form->field($model, 'sales_person_id')->textInput() ?>
+                            <?= $form->field($model, 'sales_person_id')->dropDownList($salesPersonList,[
+                                'prompt' => 'Please Select',
+                                'class' => 'select2 form-control',
+                            ]) ?>
                         
                         </div>
                     </div>
@@ -73,6 +89,9 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                                     <th width="60px">Action</th>
                                 </tr>
                             </thead>
+                            <tbody id="js-item">
+                                
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -82,6 +101,9 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                     <h3>#Payment Info</h3>
                 </div>
                 <div class="panel-body">
+                    
+                    <?= $form->field($model, 'item_total')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
+                    
                     <?= $form->field($model, 'discount')->textInput() ?>
                     
                     <?= $form->field($model, 'delivery_charge')->textInput() ?>
@@ -104,14 +126,16 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
 $this->registerJs("$('.select2').select2();", \yii\web\View::POS_END, 'select-picker');
 $js = "	$('input.typeahead').typeahead({
 	    source:  function (query, process) {
-                return $.get(baseUrl+'order/get-item', { query: query }, function (data) {
+                var distributor = $('#orders-distributor_id').val();
+                
+                return $.get(baseUrl+'order/get-item', { query: query, did:distributor}, function (data) {
                     //console.log(data);
                     data = $.parseJSON(data);
 	            return process(data);
 	        });
 	    },
             updater:function (item) {
-               common.getItemSalesItem(item.id);
+               App.getItemSalesItem(item.id);
                return item;
             }
 	});";

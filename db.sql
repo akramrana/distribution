@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `is_processed` int(1) NOT NULL DEFAULT '0',
   `shop_id` int(11) DEFAULT NULL,
   `sales_person_id` int(11) DEFAULT NULL,
+  `item_total` decimal(10,2) NOT NULL,
   `delivery_time` datetime DEFAULT NULL,
   `delivery_charge` double DEFAULT NULL,
   `is_paid` int(1) NOT NULL DEFAULT '0',
@@ -271,12 +272,14 @@ CREATE TABLE IF NOT EXISTS `sales_person` (
   PRIMARY KEY (`sales_person_id`),
   KEY `FK_sales_person_distributor` (`distributor_id`),
   CONSTRAINT `FK_sales_person_distributor` FOREIGN KEY (`distributor_id`) REFERENCES `distributor` (`distributor_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- Dumping data for table distribution.sales_person: ~1 rows (approximately)
+-- Dumping data for table distribution.sales_person: ~3 rows (approximately)
 /*!40000 ALTER TABLE `sales_person` DISABLE KEYS */;
 INSERT INTO `sales_person` (`sales_person_id`, `distributor_id`, `name`, `phone`, `present_address`, `permanent_address`, `national_id_no`, `joining_date`, `is_deleted`, `is_active`, `created_at`, `updated_at`) VALUES
-	(1, 2, 'Jalal Hossen', '12312313123', 'Test address', 'Test address', '23423424234', '2018-03-01', 0, 1, '2018-03-13 23:52:11', '2018-03-13 23:52:11');
+	(1, 2, 'Jalal Hossen', '12312313123', 'Test address', 'Test address', '23423424234', '2018-03-01', 0, 1, '2018-03-13 23:52:11', '2018-03-13 23:52:11'),
+	(2, 1, 'Abdul Karim', '231231123', '', '', '', '2018-04-24', 0, 1, '2018-04-24 23:21:38', '2018-04-24 23:21:38'),
+	(3, 1, 'Mr.Yusuf Khan', '563298741', '', '', '', NULL, 0, 1, '2018-04-24 23:21:58', '2018-04-24 23:21:58');
 /*!40000 ALTER TABLE `sales_person` ENABLE KEYS */;
 
 -- Dumping structure for table distribution.shop
