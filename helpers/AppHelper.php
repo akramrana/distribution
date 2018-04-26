@@ -29,6 +29,24 @@ class AppHelper
         $list = ArrayHelper::map($model, 'distributor_id', 'name');
         return $list;
     }
+    
+    static function getAllManager()
+    {
+        $model = \app\models\Manager::find()
+                ->orderBy(['is_deleted' => 0])
+                ->all();
+        $list = ArrayHelper::map($model, 'manager_id', 'name');
+        return $list;
+    }
+    
+    static function getAllSalesPerson()
+    {
+        $model = \app\models\SalesPerson::find()
+                ->orderBy(['is_deleted' => 0])
+                ->all();
+        $list = ArrayHelper::map($model, 'sales_person_id', 'name');
+        return $list;
+    }
 
     static function getAllSupplier()
     {
@@ -85,6 +103,13 @@ class AppHelper
                 ->orderBy(['is_deleted' => 0])
                 ->all();
         $list = ArrayHelper::map($model, 'product_id', 'name');
+        return $list;
+    }
+    
+    static function getStatusList()
+    {
+        $model = \app\models\Status::find()->orderBy(['status_id' => SORT_ASC])->all();
+        $list = ArrayHelper::map($model, 'status_id', 'name');
         return $list;
     }
 

@@ -74,7 +74,7 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                         <span class="input-group-addon" id="basic-addon1">
                             <i class="glyphicon glyphicon-pencil"></i>
                         </span>
-                        <input type="text" class="typeahead form-control" placeholder="Enter product code or name" aria-describedby="basic-addon1">
+                        <input id="item-search" type="text" class="typeahead form-control" placeholder="Enter product code or name" aria-describedby="basic-addon1">
                     </div>
                     <hr/>
                     <div style="max-height: 362px;overflow: auto;">
@@ -104,9 +104,15 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                     
                     <?= $form->field($model, 'item_total')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
                     
-                    <?= $form->field($model, 'discount')->textInput() ?>
+                    <?= $form->field($model, 'discount')->textInput([
+                        'onchange' => 'App.calculateItemTotal()'
+                    ]) ?>
                     
-                    <?= $form->field($model, 'delivery_charge')->textInput() ?>
+                    <?= $form->field($model, 'delivery_charge')->textInput([
+                        'onchange' => 'App.calculateItemTotal()'
+                    ]) ?>
+                    
+                    <?= $form->field($model, 'total')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
                     
                     <?= $form->field($model, 'is_paid')->checkbox() ?>
                 </div>

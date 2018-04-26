@@ -150,10 +150,13 @@ CREATE TABLE IF NOT EXISTS `orders` (
   CONSTRAINT `FK_orders_manager` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`manager_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_orders_sales_person` FOREIGN KEY (`sales_person_id`) REFERENCES `sales_person` (`sales_person_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_orders_shop` FOREIGN KEY (`shop_id`) REFERENCES `shop` (`shop_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
--- Dumping data for table distribution.orders: ~0 rows (approximately)
+-- Dumping data for table distribution.orders: ~1 rows (approximately)
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+INSERT INTO `orders` (`order_id`, `order_number`, `distributor_id`, `manager_id`, `recipient_name`, `recipient_phone`, `create_date`, `update_date`, `is_processed`, `shop_id`, `sales_person_id`, `item_total`, `delivery_time`, `delivery_charge`, `is_paid`, `discount`, `is_deleted`) VALUES
+	(1, 100001, 1, 1, 'Akram', '123123123', '2018-04-26 23:14:24', '2018-04-26 23:14:24', 1, 1, 3, 77538.00, NULL, 5, 0, 20, 0),
+	(2, 100002, 1, 1, 'Ezaz', '123123123', '2018-04-27 00:02:33', '2018-04-27 00:02:33', 1, 1, 2, 77595.00, NULL, 150, 0, 10000, 0);
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 
 -- Dumping structure for table distribution.order_items
@@ -169,10 +172,15 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   KEY `FK_order_items_orders` (`order_id`),
   CONSTRAINT `FK_order_items_orders` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_order_items_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
--- Dumping data for table distribution.order_items: ~0 rows (approximately)
+-- Dumping data for table distribution.order_items: ~2 rows (approximately)
 /*!40000 ALTER TABLE `order_items` DISABLE KEYS */;
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `price`, `quantity`, `message`) VALUES
+	(1, 1, 4, 9.50, 4, NULL),
+	(2, 1, 5, 77500.00, 1, NULL),
+	(3, 2, 4, 9.50, 10, NULL),
+	(4, 2, 5, 77500.00, 1, NULL);
 /*!40000 ALTER TABLE `order_items` ENABLE KEYS */;
 
 -- Dumping structure for table distribution.order_status
@@ -181,19 +189,26 @@ CREATE TABLE IF NOT EXISTS `order_status` (
   `status_date` datetime NOT NULL,
   `order_id` int(11) NOT NULL,
   `status_id` int(11) NOT NULL,
-  `manager_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `user_type` enum('A','D','M') NOT NULL,
   `comment` text,
   PRIMARY KEY (`order_status_id`),
   KEY `fk_order_status_status1_idx` (`status_id`),
   KEY `fk_order_status_orders1_idx` (`order_id`),
-  KEY `FK_order_status_manager` (`manager_id`),
-  CONSTRAINT `FK_order_status_manager` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`manager_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  KEY `FK_order_status_manager` (`user_id`),
   CONSTRAINT `FK_order_status_orders` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_order_status_status` FOREIGN KEY (`status_id`) REFERENCES `status` (`status_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
--- Dumping data for table distribution.order_status: ~0 rows (approximately)
+-- Dumping data for table distribution.order_status: ~3 rows (approximately)
 /*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
+INSERT INTO `order_status` (`order_status_id`, `status_date`, `order_id`, `status_id`, `user_id`, `user_type`, `comment`) VALUES
+	(1, '2018-04-26 23:14:24', 1, 1, 1, 'A', 'System Comment'),
+	(2, '2018-04-26 23:53:36', 1, 3, 1, 'A', 'Order progress'),
+	(4, '2018-04-26 23:57:45', 1, 4, 1, 'A', 'delivered'),
+	(5, '2018-04-27 00:02:33', 2, 1, 1, 'A', NULL),
+	(6, '2018-04-27 00:02:44', 2, 3, 1, 'A', ''),
+	(7, '2018-04-27 00:03:23', 2, 4, 1, 'A', '');
 /*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
 
 -- Dumping structure for table distribution.product

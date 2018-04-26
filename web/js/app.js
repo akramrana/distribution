@@ -160,6 +160,7 @@ class App {
 <td class="text-right"><a href="javascript:;" onclick="App.removeSaleItem(\'' + rowId + '\')"><i class="glyphicon glyphicon-trash"></i></a></td>\n\
 </tr>';
                         $("#js-item").append(tr);
+                        $("#item-search").val("");
                         App.calculateItemTotal();
                     },
                     error: function (jqXHR, textStatus, errorThrown)
@@ -257,6 +258,8 @@ class App {
         var total = 0;
         var subtotal = 0;
         var qtyTotal = 0;
+        var finalTotal = 0;
+        
         $("#js-item tr").each(function () {
             //var id = $(this).data("id");
             var trIdString = $(this).attr("id");
@@ -271,15 +274,48 @@ class App {
             //console.log(id);
         })
         var charge = parseFloat($("#orders-delivery_charge").val());
+        var discount = parseFloat($("#orders-discount").val());
 
         if(isNaN(charge)) {
             charge = 0;
         }
         
-        var finalTotal = total;
+        $("#orders-item_total").val(total.toFixed(2));
         
-        console.log(finalTotal);
+        finalTotal = total + charge;
         
-        $("#orders-item_total").val(finalTotal.toFixed(2));
+        if(isNaN(discount)) {
+            discount = 0;
+        }
+        
+        finalTotal = finalTotal - discount;
+        
+        $("#orders-total").val(finalTotal.toFixed(2));
+    }
+    
+    static addOrderStatus() {
+        $(".global-loader").show();
+        $.ajax({
+            type: "POST",
+            url: baseUrl + 'order/add-status',
+            data: $("#order-status-form").serialize(),
+            success: function (response)
+            {
+                $(".global-loader").hide();
+                var result = JSON.parse(response);
+                if (result.status == 201) {
+                    $("#response").html('<div class="alert alert-danger">' + result.msg + '</div>');
+                }
+                if (result.status == 200) {
+                    $("#response").html('<div class="alert alert-success">' + result.msg + '</div>');
+                    $.pjax.reload({container: '#order-status-pjax'});
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                $(".global-loader").hide();
+                alert(jqXHR.responseText);
+            }
+        })
     }
 }

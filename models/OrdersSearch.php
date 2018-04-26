@@ -48,6 +48,7 @@ class OrdersSearch extends Orders
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['order_id' => SORT_DESC]],
         ]);
 
         $this->load($params);
@@ -73,7 +74,7 @@ class OrdersSearch extends Orders
             'delivery_charge' => $this->delivery_charge,
             'is_paid' => $this->is_paid,
             'discount' => $this->discount,
-            'is_deleted' => $this->is_deleted,
+            'is_deleted' => 0,
         ]);
 
         $query->andFilterWhere(['like', 'recipient_name', $this->recipient_name])

@@ -33,6 +33,7 @@ use Yii;
  */
 class Orders extends \yii\db\ActiveRecord
 {
+    public $total;
     /**
      * @inheritdoc
      */

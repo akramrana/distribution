@@ -18,27 +18,24 @@ use Yii;
  * @property Orders $order
  * @property Status $status
  */
-class OrderStatus extends \yii\db\ActiveRecord
-{
+class OrderStatus extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'order_status';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['status_date', 'order_id', 'status_id', 'manager_id'], 'required'],
-            [['status_date'], 'safe'],
-            [['order_id', 'status_id', 'manager_id'], 'integer'],
+            [['status_date', 'order_id', 'status_id', 'user_id'], 'required'],
+            [['status_date', 'user_id', 'user_type'], 'safe'],
+            [['order_id', 'status_id', 'user_id'], 'integer'],
             [['comment'], 'string'],
-            [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => Manager::className(), 'targetAttribute' => ['manager_id' => 'manager_id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::className(), 'targetAttribute' => ['order_id' => 'order_id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => Status::className(), 'targetAttribute' => ['status_id' => 'status_id']],
         ];
@@ -47,14 +44,14 @@ class OrderStatus extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'order_status_id' => 'Order Status ID',
             'status_date' => 'Status Date',
             'order_id' => 'Order ID',
             'status_id' => 'Status ID',
-            'manager_id' => 'Manager ID',
+            'user_id' => 'User ID',
+            'user_type' => 'User Type',
             'comment' => 'Comment',
         ];
     }
@@ -62,24 +59,15 @@ class OrderStatus extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getManager()
-    {
-        return $this->hasOne(Manager::className(), ['manager_id' => 'manager_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrder()
-    {
+    public function getOrder() {
         return $this->hasOne(Orders::className(), ['order_id' => 'order_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStatus()
-    {
+    public function getStatus() {
         return $this->hasOne(Status::className(), ['status_id' => 'status_id']);
     }
+
 }
