@@ -112,5 +112,32 @@ class AppHelper
         $list = ArrayHelper::map($model, 'status_id', 'name');
         return $list;
     }
+    
+    static function getManagerByDistributor($id)
+    {
+        $model = \app\models\Manager::find()
+                ->orderBy(['is_deleted' => 0,'distributor_id' => $id])
+                ->all();
+        $list = ArrayHelper::map($model, 'manager_id', 'name');
+        return $list;
+    }
+    
+    static function getShopByDistributor($id)
+    {
+        $model = \app\models\Shop::find()
+                ->orderBy(['is_deleted' => 0,'distributor_id' => $id])
+                ->all();
+        $list = ArrayHelper::map($model, 'shop_id', 'name');
+        return $list;
+    }
+    
+    static function getSalesPersonDistributor($id)
+    {
+        $model = \app\models\SalesPerson::find()
+                ->orderBy(['is_deleted' => 0, 'distributor_id' => $id])
+                ->all();
+        $list = ArrayHelper::map($model, 'sales_person_id', 'name');
+        return $list;
+    }
 
 }

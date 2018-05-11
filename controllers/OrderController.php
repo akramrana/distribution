@@ -78,6 +78,7 @@ class OrderController extends Controller {
                         $orderItem->order_id = $model->order_id;
                         $orderItem->product_id = $pid;
                         $orderItem->quantity = $request['qty'][$k];
+                        $orderItem->message = $request['comment'][$k];
                         $orderItem->price = $productModel->final_price;
                         if (!$orderItem->save()) {
                             $success = false;
@@ -135,11 +136,37 @@ class OrderController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->order_id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $request = Yii::$app->request->bodyParams;
+            $model->update_date = date("Y-m-d H:i:s");
+            $transaction = Orders::getDb()->beginTransaction();
+            if ($model->save()) {
+                \app\models\OrderItems::deleteAll('order_id = '.$model->order_id);
+                if (!empty($request['product_id'])) {
+                    $success = true;
+                    foreach ($request['product_id'] as $k => $pid) {
+                        $productModel = \app\models\Product::findOne($pid);
+                        $orderItem = new \app\models\OrderItems();
+                        $orderItem->order_id = $model->order_id;
+                        $orderItem->product_id = $pid;
+                        $orderItem->quantity = $request['qty'][$k];
+                        $orderItem->message = $request['comment'][$k];
+                        $orderItem->price = $productModel->final_price;
+                        if (!$orderItem->save()) {
+                            $success = false;
+                        }
+                    }
+                }
+                if ($success) {
+                    $transaction->commit();
+                }
+                Yii::$app->session->setFlash('success', 'Order successfully updated');
+            } else {
+                return $this->render('update', [
+                            'model' => $model,
+                ]);
+            }
         }
-
         return $this->render('update', [
                     'model' => $model,
         ]);

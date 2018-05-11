@@ -13,7 +13,11 @@ use yii\helpers\BaseUrl;
 $managerList = [];
 $shopList = [];
 $salesPersonList = [];
-
+if (!$model->isNewRecord) {
+    $managerList = app\helpers\AppHelper::getManagerByDistributor($model->distributor_id);
+    $shopList = app\helpers\AppHelper::getShopByDistributor($model->distributor_id);
+    $salesPersonList = app\helpers\AppHelper::getSalesPersonDistributor($model->distributor_id);
+}
 $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
@@ -37,28 +41,34 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                                 'onchange' => 'App.loadManagerShopSalesPerson(this.value)'
                             ])
                             ?>
-                            
-                            <?= $form->field($model, 'manager_id')->dropDownList($managerList,[
+
+                            <?=
+                            $form->field($model, 'manager_id')->dropDownList($managerList, [
                                 'prompt' => 'Please Select',
                                 'class' => 'select2 form-control',
-                            ]) ?>
-                            
+                            ])
+                            ?>
+
                             <?= $form->field($model, 'order_number')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
-                        
+
                             <?= $form->field($model, 'recipient_name')->textInput(['maxlength' => true]) ?>
-                            
+
                             <?= $form->field($model, 'recipient_phone')->textInput(['maxlength' => true]) ?>
-                            
-                            <?= $form->field($model, 'shop_id')->dropDownList($shopList,[
+
+                            <?=
+                            $form->field($model, 'shop_id')->dropDownList($shopList, [
                                 'prompt' => 'Please Select',
                                 'class' => 'select2 form-control',
-                            ]) ?>
-                            
-                            <?= $form->field($model, 'sales_person_id')->dropDownList($salesPersonList,[
+                            ])
+                            ?>
+
+                            <?=
+                            $form->field($model, 'sales_person_id')->dropDownList($salesPersonList, [
                                 'prompt' => 'Please Select',
                                 'class' => 'select2 form-control',
-                            ]) ?>
-                        
+                            ])
+                            ?>
+
                         </div>
                     </div>
                 </div>
@@ -90,7 +100,34 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                                 </tr>
                             </thead>
                             <tbody id="js-item">
-                                
+                                <?php
+                                $itemTotal = 0;
+                                if (!$model->isNewRecord) {
+                                    $n = 0;
+                                    foreach ($model->orderItems as $oi) {
+                                        $rowId = $oi->order_item_id . '-' . $n;
+                                        $price = $oi->price * $oi->quantity;
+                                        $itemTotal += $price;
+                                        ?>
+                                        <tr data-id="<?= $oi->order_item_id; ?>" data-price="<?= $oi->price; ?>" id="sl-<?= $rowId; ?>">
+                                            <td><?= $oi->product->name; ?> <input type="hidden" name="product_id[]" value="<?= $oi->product_id; ?>"/></td>
+                                            <td><textarea style="width:100%;height:50px;" name="comment[]" class="form-control itm-comment"><?= $oi->message; ?></textarea></td>
+                                            <td><?= $oi->price; ?></td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <span onclick="App.qtyModifier('<?= $rowId; ?>', 'minus')" class="input-group-addon">-</span>
+                                                    <input style="width:41px;" type="text" onchange="App.checkQty(this.value, '<?= $rowId; ?>')" id="qty-<?= $rowId; ?>" type="text" value="<?= $oi->quantity; ?>" name="qty[]" class="form-control text-center"/>
+                                                    <span onclick="App.qtyModifier('<?= $rowId; ?>', 'plus')" class="input-group-addon">+</span>
+                                                </div>
+                                            </td>
+                                            <td><span id="sp-<?= $rowId; ?>"><?= number_format($price, 2); ?></span></td>
+                                            <td class="text-right"><a href="javascript:;" onclick="App.removeSaleItem('<?= $rowId; ?>')"><i class="glyphicon glyphicon-trash"></i></a></td>
+                                        </tr>
+                                        <?php
+                                        $n++;
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -101,19 +138,28 @@ $this->registerJsFile(BaseUrl::home() . 'js/bootstrap3-typeahead.min.js', ['depe
                     <h3>#Payment Info</h3>
                 </div>
                 <div class="panel-body">
-                    
+
                     <?= $form->field($model, 'item_total')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
-                    
-                    <?= $form->field($model, 'discount')->textInput([
+
+                    <?=
+                    $form->field($model, 'discount')->textInput([
                         'onchange' => 'App.calculateItemTotal()'
-                    ]) ?>
-                    
-                    <?= $form->field($model, 'delivery_charge')->textInput([
+                    ])
+                    ?>
+
+                    <?=
+                    $form->field($model, 'delivery_charge')->textInput([
                         'onchange' => 'App.calculateItemTotal()'
-                    ]) ?>
-                    
+                    ]);
+
+                    if (!$model->isNewRecord) {
+                        $finalTotal = ($itemTotal+$model->delivery_charge)-$model->discount;
+                        $model->total = number_format($finalTotal,2);
+                    }
+                    ?>
+
                     <?= $form->field($model, 'total')->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?>
-                    
+
                     <?= $form->field($model, 'is_paid')->checkbox() ?>
                 </div>
             </div>
