@@ -303,7 +303,6 @@ class App {
             {
                 $(".global-loader").hide();
                 var result = JSON.parse(response);
-                $("textarea").val("");
                 if (result.status == 201) {
                     $("#response").html('<div class="alert alert-danger">' + result.msg + '</div>');
                 }
