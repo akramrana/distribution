@@ -59,11 +59,11 @@ $orderStatus = \app\models\OrderStatus::find()
                 //'update_date',
                 [
                     'attribute' => 'shop_id',
-                    'value' => $model->shop->name
+                    'value' => !empty($model->shop)?$model->shop->name:""
                 ],
                 [
                     'attribute' => 'sales_person_id',
-                    'value' => $model->salesPerson->name
+                    'value' => !empty($model->salesPerson)?$model->salesPerson->name:""
                 ],
                 //'delivery_time',
                 'item_total',
@@ -142,8 +142,9 @@ $orderStatus = \app\models\OrderStatus::find()
                 <?php 
                 Pjax::begin([
                     'timeout' => 60000,
+                    'id' => 'order-status-pjax'
                 ]); ?>
-                <div class="col-md-12" id="order-status-pjax">
+                <div class="col-md-12">
                     <?php
                     $dataProvider2 = new ActiveDataProvider([
                         'query' => $model->getOrderStatuses()->orderBy(['order_status_id' => SORT_DESC]),

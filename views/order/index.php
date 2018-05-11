@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'attribute' => 'sales_person_id',
                     'value' => function($model) {
-                        return $model->salesPerson->name;
+                        return !empty($model->salesPerson)?$model->salesPerson->name:"";
                     },
                     'filter' => Html::activeDropDownList($searchModel, 'sales_person_id', app\helpers\AppHelper ::getAllSalesPerson(), ['class' => 'form-control select2', 'prompt' => 'Filter']),
                 ],
